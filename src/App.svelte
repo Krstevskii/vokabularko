@@ -1,5 +1,14 @@
 <script>
-import SimpleRouter from "./SimpleRouter.svelte";
+    // router
+    import Router from "svelte-spa-router";
+    import Navbar from "./Navbar.svelte";
+    import Footer from "./Footer.svelte";
+    import { routes } from "./routes";
 </script>
 
-<SimpleRouter />
+<style>
+</style>
+
+<Navbar />
+<Router {routes} />
+<Footer />
