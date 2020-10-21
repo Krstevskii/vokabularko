@@ -1,9 +1,13 @@
 <script>
-    const tabIndex = Object.freeze({
-        read: 1,
-        write: 2,
-        myTexts: 3,
-    });
+    import MyTexts from "./MyTexts.svelte";
+    import Write from "./Write.svelte";
+
+    const options = [
+        { tabIndex: 1, displayText: "Прочитај" },
+        { tabIndex: 2, displayText: "Напиши" },
+    ];
+
+    let activeTab = 1;
 </script>
 
 <style>
@@ -11,7 +15,9 @@
         height: 85%;
     }
 
-    textarea {
+    .read-write-actions {
+        margin-top: 10%;
+        margin-left: 8%;
     }
 
     .row {
@@ -26,34 +32,26 @@
 <div class="read-and-write">
     <div class="row">
         <div class="col-4">
-            <div class="container">
-                <ul class="list-group">
-                    <li class="list-group-item">Прочитај</li>
-                    <li class="list-group-item">Напиши</li>
-                    <li class="list-group-item">Мои текстови</li>
+            <div class="read-write-actions">
+                <ul class="list-group list-group-flush">
+                    {#each options as option (option)}
+                        <li
+                            class="list-group-item"
+                            class:active={activeTab == option.tabIndex}
+                            on:click={() => (activeTab = option.tabIndex)}>
+                            {option.displayText}
+                        </li>
+                    {/each}
                 </ul>
             </div>
         </div>
         <div class="col-8">
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <div class="container">
-                            <h1 class="display-6">Наслов</h1>
-                        </div>
-                    </div>
-                    <div class="w-100" style="height: 2%" />
-                    <div class="col">
-                        <div class="form-group">
-                            <textarea
-                                class="form-control"
-                                id="write"
-                                rows="20"
-                                cols="50" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {#if activeTab == 1}
+                <MyTexts />
+            {/if}
+            {#if activeTab == 2}
+                <Write bind:activeTab />
+            {/if}
         </div>
     </div>
 </div>

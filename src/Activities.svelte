@@ -42,7 +42,7 @@
                 <div
                     class="jumbotron"
                     style="background-color: #FAD7A0;"
-                    on:click={() => push('/activities/gramaticsAndVocabulary')}>
+                    on:click={() => push('/activities/grammaticsAndVocabulary')}>
                     <p>Граматика и вокабулар</p>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                 <div
                     class="jumbotron"
                     style="background-color: #F5CBA7;"
-                    on:click={() => push('/activities/hearAndWatch')}>
+                    on:click={() => push('/activities/listenAndWatch')}>
                     <p>Слушај и Гледај</p>
                 </div>
             </div>
