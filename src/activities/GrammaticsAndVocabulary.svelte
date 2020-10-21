@@ -1,4 +1,5 @@
 <script>
+    import { push } from "svelte-spa-router";
     const tabIndex = Object.freeze({
         read: 1,
         write: 2,
@@ -284,20 +285,34 @@
         margin-bottom: 0px;
         margin-left: auto;
     }
+    .grammatics-vocabulary-actions {
+        margin-top: 10%;
+        margin-left: 8%;
+    }
+    .row-btn {
+        height: 1%;
+        margin: 1% 32.5%;
+    }
 </style>
 
 <div class="read-and-write">
+    <div class="row-btn">
+        <div class="col-4"><button
+            type="button"
+            class="btn btn-primary"
+            on:click={() => push('/activities/')}><span><i class="fas fa-chevron-left"></i></span>&nbsp;<span>Назад</span></button></div>
+    </div>
     <div class="row">
         <div class="col-4">
-            <div class="container">
+            <div class="grammatics-vocabulary-actions">
                 <ul class="list-group list-group-flush">
                     {#each categories as category}
                         <li
                             class="list-group-item"
                             class:active={activeCat == category.index}
                             on:click={() => (activeCat = category.index)}
-                            on:click={() => setCattegory(category.index)}>
-                            {category.title}
+                            on:click={() => setCattegory(category.index)}><span><i class="fas fa-hand-point-right"></i></span>&nbsp;
+                            <span>{category.title}</span>
                         </li>
                     {/each}
                 </ul>
@@ -312,7 +327,7 @@
                                 <img
                                     src={question.title}
                                     alt="pogodi"
-                                    style="width:40%;" />
+                                    style="width:40%; height:100%;" />
                             </div>
                         </div>
                         <div class="w-100" style="height: 2%" />
@@ -341,8 +356,8 @@
                     <div class="col">
                         <button
                             type="button"
-                            class="btn btn-primary-outline"
-                            on:click={inc}>Следно прашање</button>
+                            class="btn btn-primary"
+                            on:click={inc}><span><i class="fas fa-chevron-right"></i></span>&nbsp;<span>Следно прашање</span></button>
                     </div>
                 </div>
             {/if}
@@ -358,8 +373,8 @@
                 {/if}
                 <div class="col">
                     <button
-                        on:click={() => setCattegory({ currentCat })}>Започни од
-                        ново</button>
+                        on:click={() => setCattegory({ currentCat })}><span><i class="fas fa-step-backward"></i></span>&nbsp;<span>Започни од
+                            ново</span></button>
                 </div>
             {/if}
         </div>

@@ -55,10 +55,10 @@
                                         doRead = true;
                                         content = sampleText.content;
                                         title = sampleText.title;
-                                    }}>Прочитај</button>
+                                    }}><span><i class="fas fa-glasses"></i></span>&nbsp;<span>Прочитај</span></button>
                                 <button
                                     class="btn btn-danger"
-                                    on:click={() => remove(sampleText.id)}>Избриши</button>
+                                    on:click={() => remove(sampleText.id)}><span><i class="fas fa-trash-alt"></i></span>&nbsp;<span>Избриши</span></button>
                             </div>
                         </div>
                     </div>
