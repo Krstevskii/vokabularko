@@ -66,6 +66,6 @@
         </div>
         <button
             class="btn btn-primary" type="button"
-            on:click={(e) => save(e)}>Зачувајjjj</button>
+            on:click={(e) => save(e)}><span><i class="fas fa-save"></i></span>&nbsp;<span>Зачувај</span></button>
     </form>
 </div>

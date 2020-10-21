@@ -16,7 +16,7 @@
             </div>
             <div class="w-100"></div>
             <div class="col">
-            <button class="btn btn-primary" style="padding-left: 15px;" on:click={() => doRead = false}>Назад</button>
+            <button class="btn btn-primary" style="padding-left: 15px;" on:click={() => doRead = false}><span><i class="fas fa-long-arrow-alt-left"></i></span>&nbsp;<span>Назад</span></button>
         </div>
         </div>
     </div>
