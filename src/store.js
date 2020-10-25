@@ -52,3 +52,4 @@ export const store = writable(initial);
 export const userStore = writable(user);
 export const isUserLoggedIn = derived(userStore, $userStore => $userStore ? true : false)
 export const myTextsStore = writable(myTextsInitial);
+export const darkTheme = writable(false);
