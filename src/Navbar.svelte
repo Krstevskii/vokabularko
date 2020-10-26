@@ -4,8 +4,14 @@
 
     import { isUserLoggedIn, userStore } from "./store";
     import { removeStoredUser } from "./logging";
+    import { darkTheme } from "./store";
 
     let currentLocation;
+
+    function toggle() {
+        window.document.body.classList.toggle("dark-mode");
+        $darkTheme = !$darkTheme;
+    }
 
     $: {
         if ($location === "/activities" && !$isUserLoggedIn) {
@@ -29,6 +35,29 @@
     .logo {
         width: 50px;
         height: 50px;
+    }
+    /* button {
+		background-color: #f76027;
+		color: white;
+		border: none;
+		border-radius: 3px;
+		padding: 0.5rem;
+		text-transform: uppercase;
+		
+	} */
+    :global(body.dark-mode) button {
+        background-color: #0084f6;
+        color: white;
+    }
+    :global(body) {
+        background-color: #f2eee2;
+        color: #0084f6;
+        transition: background-color 0.3s;
+    }
+    :global(body.dark-mode) {
+        background-color: #1d3040;
+        /* background-color: #080705; */
+        color: #bfc2c7;
     }
 </style>
 
@@ -77,6 +106,15 @@
                     data-trigger="focus"
                     title="Dismissible popover"
                     data-content="And here's some amazing content. It's very engaging. Right?"> -->
+                <button class="btn btn-light" on:click={toggle}>
+                    {#if $darkTheme}
+                        <span><i
+                                class="fas fa-palette" /></span>&nbsp;<span>Светло</span>
+                    {:else}
+                        <span><i
+                                class="fas fa-palette" /></span>&nbsp;<span>Темно</span>
+                    {/if}
+                </button>
                 <i class="fas fa-info-circle" />
                 {#if $isUserLoggedIn}
                     <button
