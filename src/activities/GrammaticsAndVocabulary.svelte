@@ -41,7 +41,6 @@
 
     function initializeAnswersObj() {
         answers = {};
-        console.log("ACTIVE", activePhotoSet);
         activePhotoSet.forEach((item) => {
             answers = {
                 [item.pos]: {
@@ -51,8 +50,6 @@
                 ...answers,
             };
         });
-
-        console.log(answers);
     }
 
     function navigate(where) {
@@ -143,6 +140,10 @@
     }
     .submit-btn {
         margin-top: 30px;
+    }
+
+    .list-group-item {
+        cursor: pointer;
     }
 </style>
 

@@ -1,370 +1,292 @@
 <script>
-    import { push } from "svelte-spa-router";
-    const tabIndex = Object.freeze({
-        read: 1,
-        write: 2,
-        myTexts: 3,
-    });
-    let count = 0;
-    let picked;
+    import data from "./static/accentAndPronounce";
+    import { userStore } from "../store";
+
+    const options = [
+        {
+            tabIndex: 1,
+            displayText: "Општо",
+            iconClass: "fas fa-bell",
+        },
+        {
+            tabIndex: 2,
+            displayText: "Животни",
+            iconClass: "fas fa-paw",
+        },
+    ];
+
+    let activeTab = 1;
+    let activeWord = {};
+    let showResults = false;
     let answers = {};
-    let last = 0;
-    let qst = [];
-    let activeCat = 0;
-    let currentCat;
-    let categories = [
-        {
-            title: "Општо",
-            index: 0,
-            //val: questionsOps
-        },
-        {
-            title: "Животни",
-            index: 1,
-            //val: questionsAnm
-        },
-    ];
-    let questionsOps = [
-        {
-            title: "Микрофон",
-            id: "0",
-            options: [
-                {
-                    title: "кро",
-                    value: "кро",
-                    true: 0,
-                },
-                {
-                    title: "Ми",
-                    value: "Ми",
-                    true: 1,
-                },
-                {
-                    title: "фон",
-                    value: "фон",
-                    true: 0,
-                },
-            ],
-        },
-        {
-            title: "Велосипед",
-            id: "1",
-            options: [
-                {
-                    title: "си",
-                    value: "си",
-                    true: 0,
-                },
-                {
-                    title: "ло",
-                    value: "ло",
-                    true: 1,
-                },
-                {
-                    title: "пед",
-                    value: "пед",
-                    true: 0,
-                },
-                {
-                    title: "Ве",
-                    value: "Ве",
-                    true: 0,
-                },
-            ],
-        },
-        {
-            title: "Кондураџија",
-            id: "2",
-            options: [
-                {
-                    title: "ду",
-                    value: "ду",
-                    true: 0,
-                },
-                {
-                    title: "Кон",
-                    value: "Кон",
-                    true: 0,
-                },
-                {
-                    title: "ра",
-                    value: "ра",
-                    true: 1,
-                },
-                {
-                    title: "ја",
-                    value: "ја",
-                    true: 0,
-                },
-                {
-                    title: "џи",
-                    value: "џи",
-                    true: 0,
-                },
-            ],
-        },
-    ];
-    let questionsAnm = [
-        {
-            title: "Кокошка",
-            id: "0",
-            options: [
-                {
-                    title: "Ко",
-                    value: "Ко",
-                    true: 1,
-                },
-                {
-                    title: "кош",
-                    value: "кош",
-                    true: 0,
-                },
-                {
-                    title: "ка",
-                    value: "ка",
-                    true: 0,
-                },
-            ],
-        },
-        {
-            title: "Носорог",
-            id: "1",
-            options: [
-                {
-                    title: "рог",
-                    value: "рог",
-                    true: 0,
-                },
-                {
-                    title: "со",
-                    value: "со",
-                    true: 0,
-                },
-                {
-                    title: "Но",
-                    value: "Но",
-                    true: 1,
-                },
-            ],
-        },
-        {
-            title: "Крокодил",
-            id: "2",
-            options: [
-                {
-                    title: "Кро",
-                    value: "Кро",
-                    true: 1,
-                },
-                {
-                    title: "дил",
-                    value: "дил",
-                    true: 0,
-                },
-                {
-                    title: "ко",
-                    value: "ко",
-                    true: 0,
-                },
-            ],
-        },
-    ];
-    let activeQuestion = 0;
-    //$: question = questionsOps[activeQuestion];
-    function setCattegory(ind) {
-        if (ind == 0) qst = questionsOps;
-        else if (ind == 1) qst = questionsAnm;
-        picked = undefined;
-        activeQuestion = 0;
-        last = 0;
+    let disableButton = true;
+    let correctAnswers = 0;
+
+    $: activeWords = activeTab === 1 ? data.general : data.animals;
+    $: activeWords, initializeActiveWord(), initializeAnswersObj();
+    $: {
+        let ans = Object.keys(answers).map((item) => {
+            return answers[item];
+        });
+
+        disableButton = ans.some((el) => el.value === null);
+    }
+    $: activeTab, reset();
+
+    function reset() {
+        showResults = false;
+        initializeAnswersObj();
+    }
+
+    function initializeAnswersObj() {
         answers = {};
-        count = 0;
-        shuffle(qst);
-        currentCat = ind;
+
+        activeWords.forEach((item) => {
+            answers = {
+                [item.pos]: {
+                    value: null,
+                    recognition: item.value,
+                },
+                ...answers,
+            };
+        });
     }
-    setCattegory(0); //init
-    $: question = qst[activeQuestion];
-    function dec() {
-        if (activeQuestion === 0) {
-            return;
+
+    function initializeActiveWord() {
+        activeWord = activeWords[0];
+    }
+
+    function navigate(where) {
+        if (where === "prev") {
+            if (activeWord.pos !== 1) {
+                activeWord = activeWords.find(
+                    (word) => word.pos === activeWord.pos - 1
+                );
+            }
         }
-        activeQuestion -= 1;
-        picked = undefined;
-    }
-    function inc() {
-        if (activeQuestion === qst.length - 1) {
-            last = 1;
-            picked = undefined;
-            correctAnswers();
-            return;
-        }
-        activeQuestion += 1;
-        picked = undefined;
-    }
-    function correctAnswers() {
-        console.log("here");
-        for (let i = 0; i < qst.length; i++) {
-            if (answers[i] == 1) {
-                count++;
-                console.log(count);
+
+        if (where === "next") {
+            if (activeWord.pos !== 3) {
+                activeWord = activeWords.find(
+                    (word) => word.pos === activeWord.pos + 1
+                );
             }
         }
     }
-    function check(answ) {
-        picked = answ;
+
+    function handleQuizAnswerClick(pos, value, text) {
+        answers[pos] = {
+            value,
+            recognition: text,
+        };
     }
-    function shuffle(array) {
-        var currentIndex = array.length,
-            temporaryValue,
-            randomIndex;
 
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
+    function submit(e) {
+        e.preventDefault();
 
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
+        correctAnswers = Object.keys(answers)
+            .map((item) => answers[item])
+            .reduce((acc, currVal) => acc + currVal.value, 0);
 
-        return array;
-    }
-    //shuffle(questions);
-    function reload() {
-        window.location.reload();
+        showResults = true;
     }
 </script>
 
 <style>
-    .read-and-write {
+    .accent-and-pronounce {
         height: 85%;
     }
 
-    textarea {
+    .accent-and-pronounce-actions {
+        margin-top: 10%;
+        margin-left: 8%;
     }
 
-    .row {
+    .content {
+        height: 500px;
+        margin-top: 5%;
+    }
+
+    .navigation {
+        background-color: white;
+        color: grey;
         height: 100%;
+        text-align: center;
+        cursor: pointer;
     }
 
     .container {
         height: 100%;
     }
-    .videoCont {
-        /* position: relative;
-        width: 100%;
-        height: 80%; */
-        padding-bottom: 56.25%;
-        margin: 0 auto;
+
+    .navigation:hover {
+        background-color: rgb(235, 235, 235);
+        color: black;
     }
-    .accent-pronounce-actions {
-        margin-top: 10%;
-        margin-left: 8%;
+
+    .content .navigation i {
+        font-size: 50px;
     }
-    .row-btn {
-        height: 1%;
-        margin: 1% 32.5%;
+
+    .quiz-answer:hover {
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .submit-btn {
+        margin-top: 30px;
+    }
+
+    li {
+        cursor: pointer;
+    }
+
+    .quiz-info {
+        color: red;
     }
 </style>
 
-<div class="read-and-write">
-    <div class="row-btn">
-        <div class="col-4"><button
-            type="button"
-            class="btn btn-primary"
-            on:click={() => push('/activities/')}><span><i class="fas fa-chevron-left"></i></span>&nbsp;<span>Назад</span></button></div>
-    </div>
+<div class="accent-and-pronounce">
     <div class="row">
         <div class="col-4">
-            <div class="accent-pronounce-actions">
+            <div class="accent-and-pronounce-actions">
                 <ul class="list-group list-group-flush">
-                    {#each categories as category}
+                    {#each options as option (option)}
                         <li
                             class="list-group-item"
-                            class:active={activeCat == category.index}
-                            on:click={() => (activeCat = category.index)}
-                            on:click={() => setCattegory(category.index)}><span><i class="fas fa-hand-point-right"></i></span>&nbsp;
-                            <span>{category.title}</span>
+                            class:active={activeTab === option.tabIndex}
+                            on:click={() => (activeTab = option.tabIndex)}>
+                            <span><i class={option.iconClass} /></span>
+                            <span>{option.displayText}</span>
                         </li>
                     {/each}
                 </ul>
-
-                <!-- <ul class="list-group">
-                    <li class="list-group-item">{video.title}</li>
-                    <li class="list-group-item">{video.title}</li>
-                    <li class="list-group-item">{video.title}</li>
-                </ul> -->
             </div>
         </div>
         <div class="col-8">
-            {#if !last}
-                <div class="container">
+            <div class="content">
+                {#if showResults}
                     <div class="row">
                         <div class="col">
-                            <div class="container">
-                                <h1 class="display-4">{question.title}</h1>
+                            <div class="jumbotron">
+                                <h1 class="display-7">
+                                    Честитки,
+                                    {$userStore}
+                                </h1>
+                                <p class="lead">
+                                    Одговоривте точно на
+                                    <span
+                                        class="quiz-info">{correctAnswers}</span>
+                                    прашања од
+                                    <span class="quiz-info">3</span>
+                                </p>
+
+                                <hr class="my-4" />
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Збор</th>
+                                            <th scope="col">Решение</th>
+                                            <th scope="col">Одговор</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {#each activeWords as word, i (word)}
+                                            <tr>
+                                                <th scope="row">{i + 1}</th>
+                                                <td>{word.display}</td>
+                                                <td>
+                                                    {word.options.filter((item) => item.value === true)[0].text}
+                                                </td>
+                                                <td>
+                                                    {answers[word.pos].recognition}
+                                                </td>
+                                            </tr>
+                                        {/each}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="w-100" style="height: 2%" />
-                        <div class="videoCont">
-                            <!-- <div class="form-group">
-                            <textarea
-                                class="form-control"
-                                id="write"
-                                rows="20"
-                                cols="50" />
-                        </div> -->
-                            <!-- <iframe title={video.title} src={video.link} class="vid"></iframe> -->
-                            <!-- <div class="videoCont"><iframe title={video.title} src={video.link} class="vid"></iframe></div> -->
-                            {#each question.options as option (option.value)}
-                                <!-- <label on:click> -->
-                                <input
-                                    class="btn btn-primary"
-                                    type="button"
-                                    name={question.id}
-                                    value={option.value}
-                                    on:click={() => (answers[question.id] = option.true)}
-                                    checked={answers[question.id] == option.true}
-                                    on:click={check(option.true)} />
-                                <!-- </label> -->
-                            {/each}
-                            {#if picked}
-                                <div class="col">
-                                    <h2>Точен одговор!</h2>
-                                </div>
-                            {:else if picked == 0}
-                                <div class="col">
-                                    <h2>Погрешен одговор!</h2>
-                                </div>
-                            {/if}
+                        <div class="w-100" />
+                        <div class="col">
+                            <button
+                                class="btn btn-primary"
+                                type="button"
+                                on:click={reset}><i class="fas fa-redo" />
+                                &nbsp;Започни одново</button>
                         </div>
                     </div>
-                    <div class="col">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            on:click={inc}><span><i class="fas fa-chevron-right"></i></span>&nbsp;<span>Следно прашање</span></button>
-                    </div>
-                </div>
-            {/if}
-            {#if last}
-                {#if count && count != 2}
-                    <div class="col">
-                        <h2>Браво, точно одговори на {count} прашање</h2>
-                    </div>
                 {:else}
-                    <div class="col">
-                        <h2>Браво, точно одговори на {count} прашања</h2>
+                    <div class="row" style="height: inherit">
+                        <div class="col-2">
+                            <div
+                                class="navigation"
+                                on:click={() => navigate('prev')}>
+                                <div class="container">
+                                    <i class="fas fa-caret-left" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="container">
+                                            <h1 class="display-2">
+                                                {activeWord.display}
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <div class="w-100" />
+                                    <div class="col">
+                                        <div
+                                            class="container"
+                                            style="margin-top: 3%">
+                                            <div class="row">
+                                                {#each activeWord.options as option (option)}
+                                                    <div
+                                                        class="col"
+                                                        style="text-align: center;">
+                                                        <p
+                                                            style={answers[activeWord.pos].recognition === option.text && answers[activeWord.pos].value !== null ? 'background-color: #007bff; border-radius: 5px; color: white; cursor: pointer;' : ''}
+                                                            class="quiz-answer"
+                                                            on:click={() => handleQuizAnswerClick(activeWord.pos, option.value, option.text)}>
+                                                            {option.text.toUpperCase()}
+                                                        </p>
+                                                    </div>
+                                                {/each}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100" />
+                                    <div class="col">
+                                        <div class="container">
+                                            <button
+                                                disabled={disableButton}
+                                                on:click={(e) => submit(e)}
+                                                class="btn btn-primary submit-btn"
+                                                type="button">Внеси</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div
+                                class="navigation"
+                                on:click={() => navigate('next')}>
+                                <div class="container">
+                                    <i class="fas fa-caret-right" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {/if}
-                <div class="col">
-                    <button on:click={() => setCattegory({currentCat})}><span><i class="fas fa-step-backward"></i></span>&nbsp;<span>Започни од
-                        ново</span></button>
-                </div>
-            {/if}
+            </div>
         </div>
     </div>
 </div>
