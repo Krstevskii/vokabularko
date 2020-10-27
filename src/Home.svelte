@@ -3,9 +3,12 @@
     import { push, link } from "svelte-spa-router";
     import { storeUser } from "./logging";
     import { userStore, isUserLoggedIn } from "./store";
-
+    import { darkTheme } from './store';
+    
     let name = $userStore;
     let errorMsg = "";
+    let homeLight = "#e9ecef";
+    let homeDark = "#577399";
 
     function onStartClick() {
         if (name) {
@@ -45,13 +48,15 @@
     }
 </style>
 
-<div class="home" style="background-color: {$store.backgroundColor}">
+<!-- <div class="home" style="background-color: {$store.backgroundColor}"> -->
+<div class="home">
     <div class="container">
         {#if $isUserLoggedIn}
             <div class="row">
                 <div class="col-3" />
                 <div class="col-6">
-                    <div class="jumbotron">
+                    <div class="jumbotron"
+                    style="background-color: {$darkTheme? homeDark : homeLight};">
                         <h1 class="display-7">Вокабуларко</h1>
                         <p class="lead">Добредојде, {name}</p>
 
