@@ -4,8 +4,12 @@
     import { push } from "svelte-spa-router";
 
     const options = [
-        { tabIndex: 1, displayText: "Прочитај" },
-        { tabIndex: 2, displayText: "Напиши" },
+        {
+            tabIndex: 1,
+            displayText: "Прочитај",
+            iconClass: "fas fa-book-open",
+        },
+        { tabIndex: 2, displayText: "Напиши", iconClass: "fas fa-pencil-alt" },
     ];
 
     let activeTab = 1;
@@ -28,19 +32,12 @@
     .container {
         height: 100%;
     }
-    .row-btn {
-        height: 1%;
-        margin: 1% 32.5%;
+    .back-button {
+        margin-top: 5%;
     }
 </style>
 
 <div class="read-and-write">
-    <div class="row-btn">
-        <div class="col-4"><button
-            type="button"
-            class="btn btn-primary"
-            on:click={() => push('/activities/')}><span><i class="fas fa-chevron-left"></i></span>&nbsp;<span>Назад</span></button></div>
-    </div>
     <div class="row">
         <div class="col-4">
             <div class="read-write-actions">
@@ -49,7 +46,8 @@
                         <li
                             class="list-group-item"
                             class:active={activeTab == option.tabIndex}
-                            on:click={() => (activeTab = option.tabIndex)}><span><i class="fas fa-book"></i></span>&nbsp;
+                            on:click={() => (activeTab = option.tabIndex)}>
+                            <span><i class={option.iconClass} /></span>&nbsp;
                             <span>{option.displayText}</span>
                         </li>
                     {/each}
@@ -57,6 +55,12 @@
             </div>
         </div>
         <div class="col-8">
+            <button
+                type="button"
+                class="btn btn-primary back-button"
+                on:click={() => push('/activities/')}><span><i
+                        class="fas fa-chevron-left" /></span>&nbsp;<span>Назад</span></button>
+
             {#if activeTab == 1}
                 <MyTexts />
             {/if}
