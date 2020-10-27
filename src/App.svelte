@@ -11,4 +11,4 @@
 
 <Navbar />
 <Router {routes} />
-<Footer />
+<!-- <Footer /> -->

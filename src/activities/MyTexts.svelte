@@ -11,7 +11,7 @@
     $: $myTextsStore, reRenderDisplayText();
 
     function remove(id) {
-        const index = $myTextsStore.findIndex((item) => (item.id == id));
+        const index = $myTextsStore.findIndex((item) => item.id == id);
         $myTextsStore.splice(index, 1);
         $myTextsStore = $myTextsStore;
     }
@@ -32,7 +32,7 @@
 
 <style>
     .my-texts {
-        margin-top: 5%;
+        margin-top: 2%;
     }
 </style>
 
@@ -49,16 +49,24 @@
                                 <p class="card-text">
                                     {sampleText.content.substring(0, 20)}...
                                 </p>
-                                <button
-                                    class="btn btn-primary"
-                                    on:click={() => {
-                                        doRead = true;
-                                        content = sampleText.content;
-                                        title = sampleText.title;
-                                    }}><span><i class="fas fa-glasses"></i></span>&nbsp;<span>Прочитај</span></button>
-                                <button
-                                    class="btn btn-danger"
-                                    on:click={() => remove(sampleText.id)}><span><i class="fas fa-trash-alt"></i></span>&nbsp;<span>Избриши</span></button>
+                                <div class="row justify-content-start">
+                                    <div class="col-md-auto">
+                                        <button
+                                            class="btn btn-primary"
+                                            on:click={() => {
+                                                doRead = true;
+                                                content = sampleText.content;
+                                                title = sampleText.title;
+                                            }}><span><i
+                                                    class="fas fa-glasses" /></span>&nbsp;<span>Прочитај</span></button>
+                                    </div>
+                                    <div class="col-md-auto">
+                                        <button
+                                            class="btn btn-danger"
+                                            on:click={() => remove(sampleText.id)}><span><i
+                                                    class="fas fa-trash-alt" /></span>&nbsp;<span>Избриши</span></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
