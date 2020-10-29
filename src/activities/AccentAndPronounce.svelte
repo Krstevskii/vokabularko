@@ -1,6 +1,12 @@
 <script>
     import data from "./static/accentAndPronounce";
     import { userStore } from "../store";
+    import { darkTheme2 } from "../store";
+    import { lightTheme2 } from "../store";
+    import { popOverTxt } from "../store";
+    import { lightTheme } from "../store";
+
+    $popOverTxt = "Кликни го слогот на кој мислиш дека паѓа акцентот на прикажаниот збор и притисни на стрелката за да отидеш на следното прашање. Кога ќе ги одговориш сите прашања, притисни на копчето „Внеси“ за да го добиеш твојот резултат. П.С. Кај трисложните и повеќесложните зборови акцентот стои на третиот слог од крајот на зборот."
 
     const options = [
         {
@@ -108,11 +114,13 @@
     }
 
     .navigation {
-        background-color: white;
-        color: grey;
+        /* background-color: white; */
+        background-color: transparent;
+        /* color: grey; */
         height: 100%;
         text-align: center;
         cursor: pointer;
+        transition: box-shadow .3s;
     }
 
     .container {
@@ -120,8 +128,9 @@
     }
 
     .navigation:hover {
-        background-color: rgb(235, 235, 235);
-        color: black;
+        /* background-color: rgb(235, 235, 235);
+        color: black; */
+        box-shadow: 0 0 11px black;
     }
 
     .content .navigation i {
@@ -130,6 +139,18 @@
 
     .quiz-answer:hover {
         background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .quiz-answer-dark:hover {
+        background-color: #f8f9fa;
+        color: black;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .quiz-answer-light2:hover {
+        background-color: #868e96;
         color: white;
         border-radius: 5px;
         cursor: pointer;
@@ -146,6 +167,40 @@
     .quiz-info {
         color: red;
     }
+    /* .list-grp-dark {
+        background-color: #1d3040;
+    } */
+    /* .list-grp-light2 {
+        background-color: #114B5F;
+    } */
+    .list-grp-light2 {
+        color: #d6d8db;
+        background-color: #114B5F;
+    }
+    .list-grp-light2.list-group-item-action.active {
+        color: #114B5F;
+        background-color: #d6d8db;
+        /* border-color: #114B5F; */
+        border-color: #d6d8db;
+    }
+    .list-grp-light2.list-group-item-action:focus, .list-grp-light2.list-group-item-action:hover {
+        color: #114B5F;
+        background-color: #c8cbcf;
+    }
+
+    .list-grp-dark {
+        color: #d6d8db;
+        background-color: #1d3040;
+    }
+    .list-grp-dark.list-group-item-action.active {
+        color: #1d3040;
+        background-color: #d6d8db;
+        border-color: #d6d8db;
+    }
+    .list-grp-dark.list-group-item-action:focus, .list-grp-dark.list-group-item-action:hover {
+        color: #1d3040;
+        background-color: #c8cbcf;
+    }
 </style>
 
 <div class="accent-and-pronounce">
@@ -155,7 +210,7 @@
                 <ul class="list-group list-group-flush">
                     {#each options as option (option)}
                         <li
-                            class="list-group-item"
+                            class="list-group-item list-group-item-action" class:list-grp-dark={$darkTheme2} class:list-grp-light2={$lightTheme2}
                             class:active={activeTab === option.tabIndex}
                             on:click={() => (activeTab = option.tabIndex)}>
                             <span><i class={option.iconClass} /></span>
@@ -171,11 +226,11 @@
                     <div class="row">
                         <div class="col">
                             <div class="jumbotron">
-                                <h1 class="display-7">
+                                <h1 class="display-7" style="color:black;">
                                     Честитки,
                                     {$userStore}
                                 </h1>
-                                <p class="lead">
+                                <p class="lead" style="color:black;">
                                     Одговоривте точно на
                                     <span
                                         class="quiz-info">{correctAnswers}</span>
@@ -214,7 +269,7 @@
                         <div class="w-100" />
                         <div class="col">
                             <button
-                                class="btn btn-primary"
+                                class="btn btn-primary" class:btn-light={$darkTheme2} class:btn-secondary={$lightTheme2}
                                 type="button"
                                 on:click={reset}><i class="fas fa-redo" />
                                 &nbsp;Започни одново</button>
@@ -253,7 +308,7 @@
                                                         style="text-align: center;">
                                                         <p
                                                             style={answers[activeWord.pos].recognition === option.text && answers[activeWord.pos].value !== null ? 'background-color: #007bff; border-radius: 5px; color: white; cursor: pointer;' : ''}
-                                                            class="quiz-answer"
+                                                            class:quiz-answer={$lightTheme} class:quiz-answer-dark={$darkTheme2} class:quiz-answer-light2={$lightTheme2}
                                                             on:click={() => handleQuizAnswerClick(activeWord.pos, option.value, option.text)}>
                                                             {option.text.toUpperCase()}
                                                         </p>
@@ -268,7 +323,7 @@
                                             <button
                                                 disabled={disableButton}
                                                 on:click={(e) => submit(e)}
-                                                class="btn btn-primary submit-btn"
+                                                class="btn btn-primary submit-btn" class:btn-light={$darkTheme2} class:btn-secondary={$lightTheme2}
                                                 type="button">Внеси</button>
                                         </div>
                                     </div>
@@ -280,7 +335,7 @@
                                 class="navigation"
                                 on:click={() => navigate('next')}>
                                 <div class="container">
-                                    <i class="fas fa-caret-right" />
+                                    <i class="fas fa-caret-right" />                                  
                                 </div>
                             </div>
                         </div>

@@ -2,6 +2,9 @@
     export let title = "";
     export let content = "";
     export let doRead;
+    import { popOverTxt } from "../store";
+
+    $popOverTxt = "Избери некој од понудените текстови или напиши свој."
 </script>
 
 <div class="read">

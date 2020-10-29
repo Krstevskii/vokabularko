@@ -6,7 +6,9 @@
         bottom: 0;
         width: 100%;
         line-height: 60px;
-        background-color: #f5f5f5;
+        background-color: #f8f9fa;
+        clear: both;
+        position: fixed;
     }
 
     pre {

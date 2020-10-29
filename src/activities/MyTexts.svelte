@@ -2,6 +2,9 @@
     import { onMount } from "svelte";
     import { myTextsStore } from "../store";
     import Read from "./Read.svelte";
+    import { darkTheme2 } from "../store";
+    import { lightTheme } from "../store";
+    import { lightTheme2 } from "../store";
 
     let displayTexts = [];
     let doRead = false;
@@ -34,6 +37,16 @@
     .my-texts {
         margin-top: 2%;
     }
+    .cardLight {
+        background-color: #F5CBA7;
+    }
+    .cardLight2 {
+        background-color: #9FA4A9;
+    }
+    .cardDark {
+        /* background-color: #577399; */
+        background-color: #BDD5EA;
+    }
 </style>
 
 <div class="my-texts">
@@ -42,11 +55,11 @@
             <div class="row">
                 {#each text as sampleText (sampleText)}
                     <div class="col-4">
-                        <div class="card">
+                        <div class="card" class:cardLight2={$lightTheme2} class:cardDark={$darkTheme2}>
                             <div src="..." class="card-img-top" alt="..." />
                             <div class="card-body">
-                                <h5 class="card-title">{sampleText.title}</h5>
-                                <p class="card-text">
+                                <h5  style="color:black;" class="card-title">{sampleText.title}</h5>
+                                <p  style="color:black;" class="card-text">
                                     {sampleText.content.substring(0, 20)}...
                                 </p>
                                 <div class="row justify-content-start">

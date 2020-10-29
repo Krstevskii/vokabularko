@@ -47,9 +47,15 @@ const myTextsInitial = [{
 }];
 
 const user = "";
-
+// const lightTheme = "true";
+// const darkTheme2 = "false";
+// const lightTheme2 = "false";
 export const store = writable(initial);
 export const userStore = writable(user);
 export const isUserLoggedIn = derived(userStore, $userStore => $userStore ? true : false)
 export const myTextsStore = writable(myTextsInitial);
 export const darkTheme = writable(false);
+export const lightTheme = writable(false);
+export const lightTheme2 = writable(false);
+export const darkTheme2 = writable(false);
+export const popOverTxt = writable(false);

@@ -2,6 +2,7 @@
     import { myTextsStore } from "../store";
     import {push} from "svelte-spa-router";
 
+
     let title = "";
     let content = "";
     let error = "";

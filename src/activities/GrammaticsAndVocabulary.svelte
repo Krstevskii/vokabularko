@@ -1,6 +1,10 @@
 <script>
     import data from "./static/grammaticsAndVocabulary";
     import { userStore } from "../store";
+    import { darkTheme2 } from "../store";
+    import { lightTheme2 } from "../store";
+    import { popOverTxt } from "../store";
+    import { lightTheme } from "../store";
 
     const options = [
         {
@@ -10,6 +14,8 @@
         },
         { tabIndex: 2, displayText: "Животни", iconClass: "fas fa-paw" },
     ];
+
+    $popOverTxt = "Кликни на зборот кој мислиш дека одговара со прикажаната слика и притисни на стрелката за да отидеш на следното прашање. Кога ќе ги одговориш сите прашања, притисни на копчето „Внеси“ за да го добиеш твојот резултат.";
 
     let activeTab = 1;
 
@@ -104,16 +110,19 @@
     }
 
     .navigation {
-        background-color: white;
-        color: grey;
+        /* background-color: white; */
+        background-color: transparent;
+        /* color: grey; */
         height: 100%;
         text-align: center;
         cursor: pointer;
+        transition: box-shadow .3s;
     }
 
     .navigation:hover {
-        background-color: rgb(235, 235, 235);
-        color: black;
+        /* background-color: rgb(235, 235, 235);
+        color: black; */
+        box-shadow: 0 0 11px black;
     }
 
     .content .navigation i {
@@ -122,6 +131,10 @@
 
     img {
         height: 380px;
+        /* height: 20em; */
+        /* width: 20em; */
+        /* height: 35em;
+        width: 90%; */
     }
 
     .quiz-option {
@@ -130,6 +143,27 @@
 
     .quiz-option:hover {
         background-color: #007bff;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .quiz-option-dark {
+        padding: 10%;
+    }
+
+    .quiz-option-dark:hover {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        color: black;
+        cursor: pointer;
+    }
+    .quiz-option-light2 {
+        padding: 10%;
+    }
+
+    .quiz-option-light2:hover {
+        background-color: #868e96;
         border-radius: 5px;
         color: white;
         cursor: pointer;
@@ -145,6 +179,34 @@
     .list-group-item {
         cursor: pointer;
     }
+    .list-grp-light2 {
+        color: #d6d8db;
+        background-color: #114B5F;
+    }
+    .list-grp-light2.list-group-item-action.active {
+        color: #114B5F;
+        background-color: #d6d8db;
+        /* border-color: #114B5F; */
+        border-color: #d6d8db;
+    }
+    .list-grp-light2.list-group-item-action:focus, .list-grp-light2.list-group-item-action:hover {
+        color: #114B5F;
+        background-color: #c8cbcf;
+    }
+
+    .list-grp-dark {
+        color: #d6d8db;
+        background-color: #1d3040;
+    }
+    .list-grp-dark.list-group-item-action.active {
+        color: #1d3040;
+        background-color: #d6d8db;
+        border-color: #d6d8db;
+    }
+    .list-grp-dark.list-group-item-action:focus, .list-grp-dark.list-group-item-action:hover {
+        color: #1d3040;
+        background-color: #c8cbcf;
+    }
 </style>
 
 <div class="grammatics-and-vocabulary">
@@ -154,7 +216,7 @@
                 <ul class="list-group list-group-flush">
                     {#each options as option (option)}
                         <li
-                            class="list-group-item"
+                            class="list-group-item list-group-item-action" class:list-grp-dark={$darkTheme2} class:list-grp-light2={$lightTheme2}
                             class:active={activeTab == option.tabIndex}
                             on:click={() => (activeTab = option.tabIndex)}>
                             <span><i class={option.iconClass} /></span>
@@ -170,11 +232,11 @@
                     <div class="row">
                         <div class="col">
                             <div class="jumbotron">
-                                <h1 class="display-7">
+                                <h1 class="display-7" style="color:black;">
                                     Честитки,
                                     {$userStore}
                                 </h1>
-                                <p class="lead">
+                                <p class="lead" style="color:black;">
                                     Одговоривте точно на
                                     <span
                                         class="quiz-info">{correctAnswers}</span>
@@ -211,7 +273,7 @@
                         <div class="w-100" />
                         <div class="col">
                             <button
-                                class="btn btn-primary"
+                                class="btn btn-primary" class:btn-light={$darkTheme2} class:btn-secondary={$lightTheme2}
                                 type="button"
                                 on:click={reset}><i class="fas fa-redo" />
                                 &nbsp;Започни одново</button>
@@ -247,7 +309,7 @@
                                                     class="col"
                                                     style="text-align: center">
                                                     <span
-                                                        class="quiz-option"
+                                                        class:quiz-option={$lightTheme} class:quiz-option-dark={$darkTheme2} class:quiz-option-light2={$lightTheme2}
                                                         style={answers[activePhoto.pos].recognition === option.value && answers[activePhoto.pos].value !== null ? 'background-color: #007bff; border-radius: 5px; color: white; cursor: pointer;' : ''}>{option.value}</span>
                                                 </div>
                                             {/each}
@@ -259,7 +321,7 @@
                                             <button
                                                 on:click={(e) => submit(e)}
                                                 disabled={disableButton}
-                                                class="btn btn-primary submit-btn"
+                                                class="btn btn-primary submit-btn" class:btn-light={$darkTheme2} class:btn-secondary={$lightTheme2}
                                                 type="button">Внеси</button>
                                         </div>
                                     </div>
